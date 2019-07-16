@@ -1,6 +1,6 @@
 {
     "name": "dominicwatts/smarterlog",
-    "description": "Log with rotation",
+    "description": "Log with archive and rotation",
     "type": "magento2-module",
     "license": "proprietary",
     "version": "1.0.0",
