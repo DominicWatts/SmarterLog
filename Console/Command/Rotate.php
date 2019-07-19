@@ -11,7 +11,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Rotate extends Command
 {
-
     const ROTATE_ARGUMENT = 'rotate';
 
     /**
@@ -43,7 +42,14 @@ class Rotate extends Command
      * @var Xigen\SmarterLog\Helper\Rotate
      */
     protected $rotate;
-
+    
+    /**
+     * Rotate constructor.
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Framework\App\State $state
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
+     * @param Xigen\SmarterLog\Helper\Rotate $rotate
+     */
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\App\State $state,
@@ -64,7 +70,6 @@ class Rotate extends Command
         InputInterface $input,
         OutputInterface $output
     ) {
-
         $this->input = $input;
         $this->output = $output;
         $this->state->setAreaCode(\Magento\Framework\App\Area::AREA_GLOBAL);
@@ -73,7 +78,6 @@ class Rotate extends Command
         $rotate = $input->getArgument(self::ROTATE_ARGUMENT) ?: false;
         
         if ($rotate && $enabled) {
-
             $this->output->writeln('[' . $this->dateTime->gmtDate() . '] Start');
 
             $this->rotate->rotateLogs();

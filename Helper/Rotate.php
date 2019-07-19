@@ -7,7 +7,6 @@ use Magento\Framework\Filesystem\Glob;
 
 class Rotate extends AbstractHelper
 {
-
     const SMARTER_LOG_ENABLED = 'smarter_log/smarter_log/enabled';
 
     /**
@@ -134,5 +133,4 @@ class Rotate extends AbstractHelper
             }
         }
     }
-
 }
