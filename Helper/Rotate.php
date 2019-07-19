@@ -1,19 +1,23 @@
 <?php
 
-
 namespace Xigen\SmarterLog\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\Filesystem\Glob;
 
-class Smart extends AbstractHelper
+class Rotate extends AbstractHelper
 {
-
     const SMARTER_LOG_ENABLED = 'smarter_log/smarter_log/enabled';
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
+
+    /**
+     * @var \Magento\Framework\Filesystem\DirectoryList
+     */
+    protected $directoryList;
 
     /**
      * @var false|string
@@ -29,6 +33,16 @@ class Smart extends AbstractHelper
      * @var \Magento\Framework\Archive\Zip
      */
     protected $zip;
+
+    /**
+     * @var string
+     */
+    protected $logDirectory;
+
+    /**
+     * @var string;
+     */
+    protected $rotateDirectory;
 
     /**
      * Smart constructor.
@@ -47,7 +61,9 @@ class Smart extends AbstractHelper
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->directoryList = $directoryList;
-        $this->archiveFolder = date("Ymd") . "/";
+        $this->archiveFolder = date("Y/m/d");
+        $this->logDirectory = $this->directoryList->getPath('log');
+        $this->rotateDirectory = $this->logDirectory . "/" . $this->archiveFolder;
         $this->file = $file;
         $this->zip = $zip;
         parent::__construct($context);
@@ -68,45 +84,53 @@ class Smart extends AbstractHelper
     /**
      * Make archive directory
      */
-    public function makeDir() {
-        $logDirectory = $this->directoryList->getPath('log');
-        $rotateDirectory = $logDirectory . $this->archiveFolder;
-        $this->file->checkAndCreateFolder($rotateDirectory);
+    public function makeDir()
+    {
+        $this->file->checkAndCreateFolder($this->rotateDirectory . "/");
     }
 
     /**
      * Create zip file
      * @param null $sourceFile
      */
-    public function zipFile($sourceFile = null) {
-        if($sourceFile) {
-            $logDirectory = $this->directoryList->getPath('log');
-            $rotateDirectory = $logDirectory . $this->archiveFolder;
-            $this->file->cp($logDirectory . $sourceFile, $rotateDirectory . $rotateDirectory);
-            $this->zipArchive->pack($rotateDirectory . $rotateDirectory, $rotateDirectory . $rotateDirectory . ".zip");
+    public function zipAndDeleteFile($sourceFile = null)
+    {
+        if ($sourceFile) {
+            $sourceFile = basename($sourceFile);
+            $copy = $this->file->cp($this->logDirectory . "/" . $sourceFile, $this->rotateDirectory . "/" . $sourceFile);
+            if (!$copy) {
+                return false;
+            }
+            $archive = $this->zip->pack($this->rotateDirectory . "/" . $sourceFile, $this->rotateDirectory . "/" . $sourceFile . ".zip");
+            if (!$archive) {
+                return false;
+            }
+            $this->file->rm($this->logDirectory . "/" . $sourceFile);
+            $this->file->rm($this->rotateDirectory . "/" . $sourceFile);
         }
     }
 
     /**
      * Find all log files
      */
-    public function findLogs() {
+    public function findLogs()
+    {
         $logDirectory = $this->directoryList->getPath('log');
-        $files = glob("$logDirectory/*.txt");
+        $files = GLOB::glob("$logDirectory/*.log");
         return $files;
     }
 
     /**
      * Rotate log files process
      */
-    public function rotateLogs() {
+    public function rotateLogs()
+    {
         $files = $this->findLogs();
-        if($files) {
+        if ($files) {
             $this->makeDir();
-            foreach($files as $file) {
-                $this->zipFile($file);
+            foreach ($files as $file) {
+                $this->zipAndDeleteFile($file);
             }
         }
     }
-
 }

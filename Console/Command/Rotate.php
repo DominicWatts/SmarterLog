@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Xigen\SmarterLog\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
@@ -12,7 +11,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Rotate extends Command
 {
-
     const ROTATE_ARGUMENT = 'rotate';
 
     /**
@@ -49,7 +47,7 @@ class Rotate extends Command
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\App\State $state,
         \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
-        Xigen\SmarterLog\Helper\Rotate $rotate
+        \Xigen\SmarterLog\Helper\Rotate $rotate
     ) {
         $this->logger = $logger;
         $this->state = $state;
@@ -71,14 +69,15 @@ class Rotate extends Command
 
         $enabled = $this->rotate->getSmarterLogEnabled() ?: false;
         $rotate = $input->getArgument(self::ROTATE_ARGUMENT) ?: false;
-        if ($rotate) {
+        
+        if ($rotate && $enabled) {
+            $this->output->writeln('[' . $this->dateTime->gmtDate() . '] Start');
 
-            $this->output->writeln('['.$this->dateTime->gmtDate().'] Start');
+            $this->rotate->rotateLogs();
 
             $this->output->writeln('');
-            $this->output->writeln('['.$this->dateTime->gmtDate().'] Finish');
+            $this->output->writeln('[' . $this->dateTime->gmtDate() . '] Finish');
         }
-
     }
 
     /**
