@@ -2,6 +2,9 @@
 
 namespace Xigen\SmarterLog\Cron;
 
+/**
+ * Rotate class
+ */
 class Rotate
 {
     /**

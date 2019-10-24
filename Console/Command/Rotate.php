@@ -9,6 +9,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Rotate class
+ */
 class Rotate extends Command
 {
     const ROTATE_ARGUMENT = 'rotate';
