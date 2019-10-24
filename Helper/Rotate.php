@@ -1,7 +1,7 @@
 <?php
 
 // phpcs:disable Magento2.Files.LineLength.MaxExceeded
-// phpcs:disable Magento2.Functions.DiscouragedFunction 
+// phpcs:disable Magento2.Functions.DiscouragedFunction
 
 namespace Xigen\SmarterLog\Helper;
 
