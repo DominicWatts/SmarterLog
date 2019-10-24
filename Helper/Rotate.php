@@ -1,10 +1,16 @@
 <?php
 
+// phpcs:disable Magento2.Files.LineLength.MaxExceeded
+// phpcs:disable Magento2.Functions.DiscouragedFunction 
+
 namespace Xigen\SmarterLog\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\Filesystem\Glob;
 
+/**
+ * Rotate class
+ */
 class Rotate extends AbstractHelper
 {
     const SMARTER_LOG_ENABLED = 'smarter_log/smarter_log/enabled';
